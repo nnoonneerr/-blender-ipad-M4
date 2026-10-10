@@ -101,10 +101,13 @@ if [[ -z "$app_path" ]]; then
   exit 1
 fi
 echo "Packaging app bundle: $app_path"
-agent_startup="$(find "$app_path/Assets" -type f -path '*/scripts/startup/ghostbridge/__init__.py' -print -quit)"
-agent_core="$(find "$app_path/Assets" -type f -path '*/scripts/startup/ghostbridge/core.py' -print -quit)"
-require_nonempty "$agent_startup" "GhostBlender agent startup module"
-require_nonempty "$agent_core" "GhostBlender agent runtime tools"
+agent_bridge="$(find "$app_path/Assets" -path '*/scripts/startup/ghostbridge*' -print -quit)"
+[[ -z "$agent_bridge" ]] || fail "GhostBlender agent bridge must not be bundled: $agent_bridge"
+if strings "$app_path/$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$app_path/Info.plist")" | \
+  grep -F '_ghostbridge_transport' >/dev/null; then
+  fail "Main executable still contains the GhostBlender native transport"
+fi
+echo "Verified the GhostBlender agent bridge is not bundled"
 
 plist="$app_path/Info.plist"
 executable="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$plist")"
