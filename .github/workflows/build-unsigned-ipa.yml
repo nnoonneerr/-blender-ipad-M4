@@ -26,7 +26,7 @@ jobs:
 
     env:
       BLENDER_REF: 2bc556e58e82eb3a801895f2cb1881c0267e5cd5
-      BUNDLE_ID: com.gorillafkngorgeous.blenderipad52
+      BUNDLE_ID: com.nolentabner.blenderipad52
       SOURCE_DIR: ${{ github.workspace }}/work/blender
       BUILD_DIR: ${{ github.workspace }}/work/build-ios
       ARTIFACT_DIR: ${{ github.workspace }}/artifacts
